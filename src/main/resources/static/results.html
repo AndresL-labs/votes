@@ -4,19 +4,15 @@
     <title>Resultados</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4"> <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-4xl"> <h1 class="text-3xl font-bold text-center mb-8 text-indigo-400">Resultados de la Encuesta</h1>
 
-<div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-lg">
-    <h1 class="text-3xl font-bold text-center mb-6 text-white">Resultados de la Encuesta</h1>
-
-    <div id="results" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    <div id="results" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
 </div>
 
 <script>
     async function loadResults() {
         const res = await fetch("/api/full-results");
         const data = await res.json();
-
         let html = "";
 
         data.forEach(q => {
@@ -26,22 +22,29 @@
                 const percent = total > 0 ? Math.round((q.votes[i] / total) * 100) : 0;
 
                 return `
-                    <div class="bg-gray-700 p-4 rounded-xl shadow-md mb-3">
-                        <div class="flex justify-between mb-2">
-                            <span class="font-semibold">${opt}</span>
-                            <span>${q.votes[i]} votos (${percent}%)</span>
+                    <div class="bg-gray-700 p-3 rounded-lg shadow-md mb-3 last:mb-0">
+                        <div class="font-semibold text-indigo-300 text-sm mb-1">${opt}</div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>${q.votes[i]} votos</span>
+                            <span class="font-bold">${percent}%</span>
                         </div>
-                        <div class="w-full bg-gray-600 rounded-full h-3">
-                            <div class="bg-indigo-400 h-3 rounded-full" style="width:${percent}%"></div>
+                        <div class="w-full bg-gray-600 rounded-full h-2">
+                            <div class="bg-indigo-400 h-2 rounded-full transition-all duration-500 ease-out" style="width:${percent}%"></div>
                         </div>
                     </div>
                 `;
             }).join("");
 
+            // Estructura simplificada para que cada pregunta ocupe un 'slot' en el grid de 2 columnas
             html += `
-                <div class="bg-gray-800 p-4 rounded-xl shadow-xl">
-                    <h2 class="text-lg font-bold text-white mb-2">${q.text}</h2>
-                    ${optionsHtml}
+                <div class="bg-gray-900 p-5 rounded-xl shadow-xl border border-gray-700 hover:border-indigo-500 transition-colors duration-300">
+
+                    <h2 class="text-xl font-bold text-white mb-3 leading-tight">${q.text}</h2>
+                    <p class="text-gray-400 mb-4 text-sm font-medium border-b border-gray-700 pb-2">Total votos: <span class="text-indigo-400">${total}</span></p>
+
+                    <div>
+                        ${optionsHtml}
+                    </div>
                 </div>
             `;
         });
@@ -49,7 +52,8 @@
         document.getElementById("results").innerHTML = html;
     }
 
-    setInterval(loadResults, 1000);
+    // Intervalo de recarga de resultados
+    setInterval(loadResults, 2000); // Cambiado a 2 segundos para ser menos agresivo con el servidor
     loadResults();
 </script>
 

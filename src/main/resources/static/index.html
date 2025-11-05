@@ -29,7 +29,7 @@
     function showQuestion() {
         const q = questions.find(q => q.id === currentQuestion);
         if (!q) {
-            document.getElementById("app").innerHTML = "<h2 class='text-xl font-bold text-center'>✅ Gracias por votar!</h2>";
+            document.getElementById("app").innerHTML = "<h2 class='text-xl font-bold text-center'>Gracias por votar!</h2>";
             return;
         }
 
@@ -54,7 +54,7 @@
             body: JSON.stringify({ questionId: currentQuestion, option })
         });
 
-        document.getElementById("msg").textContent = "✅ Voto enviado";
+        document.getElementById("msg").textContent = "Voto enviado";
 
         setTimeout(() => {
             currentQuestion++;
